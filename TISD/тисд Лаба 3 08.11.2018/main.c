@@ -191,6 +191,9 @@ int main(void)
     int non_zeros_strings, non_zeros_strings_res;
     int non_zero_elem_vector;
     size_t memory;
+    printf("Данная программа способна перемножать матрицу и вектор столбец, представленные в разных форматах:обычном и разряженном\n\
+вам будет предоставллена возможность: ввести матрицу и вектор столбец вручную\nзаполнить их автоматически, введя процент заполнения матрицы нулями\n\
+сравнить время выполнения умножения в двух форматах, введя процент заполнения нулями\n\n");
     printf("Введите размерность разреженной матрицы:\n");
     if (scanf("%d", &n) != 1 || n <= 0)
     {
@@ -297,6 +300,7 @@ int main(void)
                                 multiply_matrix_form(IA, JA, A, vector_len, vector, result);
                                 printf("result is \n");
                                 print_matrix(vector_len, 1, result);
+                                count_nonzeros_elem = count_non_zeros_elem(vector_len, 1, result);
                                 int JA1[count_nonzeros_elem];
                                 int A1[count_nonzeros_elem];
                                 int IA1[vector_len];
@@ -423,9 +427,9 @@ int main(void)
                                     }
 
                                     printf("Занимаемая память:\n");
-                                    printf("Обычная: %I64d\n", sizeof(matrix));
-                                    printf("В разреженном формате: %I64d\n", memory);
-                                    printf("Время умножения обьыным умножением матриц: %ld\n", (long int)(s2_time/50));
+                                    printf("Обычная: %d\n", sizeof(matrix));
+                                    printf("В разреженном формате: %d\n", memory);
+                                    printf("Время умножения обычным умножением матриц: %ld\n", (long int)(s2_time/50));
                                     printf("Время умножения данным методом: %ld\n", (long int)(s1_time/50));
                                     if (s1_time <= s2_time)
                                     {
