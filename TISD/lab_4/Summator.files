@@ -1,0 +1,10 @@
+io.c
+io.h
+main.c
+makefile
+time.c
+err.h
+list.h
+list.c
+arr.h
+arr.c
