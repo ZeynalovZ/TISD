@@ -161,37 +161,38 @@ void from_arr_to_list(base *array, int n, Stack **head)
         }
     }
 }
-int calculate_list(Stack *head, int *result)
+int calculate_list(Stack **head, int *result)
 {
-    if (head == NULL )
+    Stack *tmp;
+    if (*head == NULL )
     {
         return -1;
     }
-    if (head->kind1 == SIGN)
+    if ((*head)->kind1 == SIGN)
     {
         printf("is sign\n");
         return -1;
     }
-    if (!(head)->prev)
+    if (!(*head)->prev)
     {
         printf("prev doesn't exist\n");
         return -1;
     }
-    *result = (head)->u.num;
+    *result = (*head)->u.num;
     //printf("num is %d\n", *result);
-    head = (head)->prev;
-    while (head)
+    *head = (*head)->prev;
+    while (*head)
     {
-        if ((head)->kind1 != SIGN)
+        if ((*head)->kind1 != SIGN)
         {
             printf("kind is not sign\n");
             return -1;
         }
-        if ((head)->u.sign == '+')
+        if ((*head)->u.sign == '+')
         {
-            if ((head)->prev)
+            if ((*head)->prev)
             {
-                *result = *result + (head)->prev->u.num;
+                *result = *result + (*head)->prev->u.num;
             }
             else
             {
@@ -199,11 +200,11 @@ int calculate_list(Stack *head, int *result)
                 return -1;
             }
         }
-        else if ((head)->u.sign == '-')
+        else if ((*head)->u.sign == '-')
         {
-            if ((head)->prev)
+            if ((*head)->prev)
             {
-                *result = *result - (head)->prev->u.num;
+                *result = *result - (*head)->prev->u.num;
             }
             else
             {
@@ -211,7 +212,10 @@ int calculate_list(Stack *head, int *result)
                 return -1;
             }
         }
-        (head) = (head)->prev->prev;
+        tmp = (*head)->prev->prev;
+        pop(&(*head)->prev);
+        pop(&(*head));
+        *head = tmp;
     }
     return OK;
 }

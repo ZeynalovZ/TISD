@@ -28,6 +28,6 @@ void *pop(Stack **list);
 void free_list(Stack *list);
 Stack *add_to_list(Stack **list);
 void from_arr_to_list(base *array, int n, Stack **head);
-int calculate_list(Stack *head, int *result);
+int calculate_list(Stack **head, int *result);
 
 #endif

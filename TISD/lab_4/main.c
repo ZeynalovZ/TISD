@@ -158,21 +158,30 @@ int main(void)
 
             case 2:
                 // Добить!
+                printf("before\n");
+                look_back(list);
                 if (list != NULL)
                 {
                     tmp1 = pop(&list);
                     if (tmp1 != 0)
                     {
                         array_mem[count_arr] = tmp1;
+                        count_arr++;
                     }
+                    printf("----------------------------------------------------------\n");
+                    printf("Стек - список:\n");
+                    look_back(list);
+                    print_array(array_mem, count_arr);
+                    printf("----------------------------------------------------------\n");
+                }
+                else
+                {
+                    print_array(array_mem, count_arr);
+                    printf("Стек пуст!\n");
                 }
 
-                count_arr++;
-                printf("----------------------------------------------------------\n");
-                printf("Стек - список:\n");
-                look_back(list);
-                print_array(array_mem, count_arr);
-                printf("----------------------------------------------------------\n");
+                //count_arr++;
+
                 break;
 
             case 3:
@@ -181,7 +190,7 @@ int main(void)
                 {
                     from_arr_to_list(array, count_readed, &list);
                     look_back(list);
-                    code_error = calculate_list(list, &result);
+                    code_error = calculate_list(&list, &result);
                     if (code_error == OK)
                     {
                         printf("----------------------------------------------------------\n");
@@ -215,7 +224,7 @@ int main(void)
         {
             from_arr_to_list(array, count_readed, &list);
             t1 = tick();
-            calculate_list(list, &result);
+            calculate_list(&list, &result);
             t2 = tick();
             s1_time = t2 - t1;
             tmp = result;
@@ -225,6 +234,8 @@ int main(void)
             s2_time = t2 - t1;
             printf("tmp is %d\n", tmp);
             printf("result is %d\n", result);
+            printf(" Размер элемента списка is %d\n", sizeof(Stack));
+            printf(" Размер элемента массива is %d\n", sizeof(base));
             if (s1_time <= s2_time)
             {
                 result_time = ((double)(s2_time - s1_time)/s2_time) * 100;
