@@ -1,9 +1,0 @@
-struct.h
-struct.c
-err.h
-makefile
-operations.c
-operations.h
-io.c
-io.h
-main.c
