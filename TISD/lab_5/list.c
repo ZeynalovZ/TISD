@@ -60,12 +60,25 @@ List_t *create_list(List_t *head, double time)
     return head;
 }
 
+List_t *create_list1(List_t *head, int entries)
+{
+    List_t *tmp = malloc(sizeof(List_t));
+    if (tmp)
+    {
+        tmp->time = entries;
+        tmp->next = NULL;
+        head = tmp;
+    }
+    return head;
+}
 
-List_t *pop(List_t *head)
+
+List_t *pop(List_t *head, int *entries)
 {
     List_t *tmp;
     tmp = head;
     //printf("tmp is %p\n", tmp);
+    *entries = head->time;
     head = head->next;
     free(tmp);
     return head;

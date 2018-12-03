@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 #include "arr.h"
 #include "list.h"
@@ -113,11 +114,14 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
     double req_show = 0;
     void *adresses[SIZE];
     int count_adress = 0;
+    int entries = 0;
+    double average = ((interval1.max - interval1.min) / 2) * n;
     while (count_req < n)
     {
         if (t_in == 0)
         {
             t_in = get_rand_range_double(interval1.min, interval1.max);
+            entries = 0;
             //arr_push(&pin, Queue, t_in);
             //req_in++;
         }
@@ -138,9 +142,19 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
                        adresses[count_adress] = head;
                        count_adress++;
                     }
-                    head = pop(head);
-                    count_req++;
-                    req_out++;
+                    head = pop(head, &entries);
+                    entries++;
+                    if (entries == 5)
+                    {
+                        entries = 0;
+                        count_req++;
+                        req_out++;
+                    }
+                    else
+                    {
+                        tail = create_list(tail, entries);
+                        head = add_end(head, tail);
+                    }
                 }
             }
             else if (list_or_array == ARRAY)
@@ -151,12 +165,21 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
                 }
                 else
                 {
-                    arr_pop(&pout, Queue);
-                    count_req++;
-                    req_out++;
+                    arr_pop(&pout, Queue, &entries);
+                    entries++;
+                    if (entries == 5)
+                    {
+                        entries = 0;
+                        count_req++;
+                        req_out++;
+                    }
+                    else
+                    {
+                        arr_push(&pin, Queue, entries);
+                    }
+
                 }
             }
-
         }
 
         t_min = min(t_in, t_out);
@@ -168,18 +191,18 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
                 if (head == NULL)
                 {
 
-                    head = create_list(head, t_in);
+                    head = create_list(head, entries);
                 }
                 else
                 {
                     //printf("11\n");
-                    tail = create_list(tail, t_in);
+                    tail = create_list(tail, entries);
                     head = add_end(head, tail);
                 }
             }
             else if (list_or_array == ARRAY)
             {
-                arr_push(&pin, Queue, t_in);
+                arr_push(&pin, Queue, entries);
             }
             req_in++;
         }
@@ -195,7 +218,7 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
             printf("time is %f\n", time);
             if (list_or_array == ARRAY)
             {
-                printf("size of queue is %I64d\n", pin - pout);
+                printf("size of queue is %d\n", abs(pin - pout));
             }
             else
             {
@@ -209,6 +232,15 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
     }
     after = clock();
     double time_overall = after - before;
+    if (time <= average)
+    {
+        printf("deviation is %f%%\n", (average - time)/average * 100);
+    }
+    else
+    {
+        printf("deviation is %f%%\n", (time - average)/time * 100);
+    }
+
     printf("Overall time is %f\n", time_overall);
     if (list_or_array == LIST)
     {

@@ -1,6 +1,6 @@
 #ifndef __ERR_H__
 #define __ERR_H__
-#define SIZE 100
+#define SIZE 200
 #define OK 0
 #define ERR_READ -1
 #define ERR_MEM  -2
