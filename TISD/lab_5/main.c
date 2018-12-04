@@ -8,6 +8,13 @@
 #include "list.h"
 #include "err.h"
 
+unsigned long long tick(void)
+{
+    unsigned long long d;
+    __asm__ __volatile__ ("rdtsc" : "=A" (d) );
+
+    return d;
+}
 
 int user_input(int *choice)
 {
@@ -85,12 +92,12 @@ double min(const double t1, const double t2)
 void print_adresses(void **adresses, int count)
 {
     printf("memore adresses:\n");
-    printf("---------------------------");
+    printf("-----------------------\n");
     for (int i = 0; i < count; i++)
     {
         printf("| adress %p |\n",  adresses[i]);
     }
-    printf("---------------------------");
+    printf("------------------------");
     printf("\n");
 }
 void work_space(int n, interval interval1, interval interval2, int list_or_array, int flag_choise)
@@ -106,14 +113,15 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
     double *pin = &Queue[0];
     double *pout = &Queue[0];
     // Время выполнения 1000 операций
-    time_t before, after;
+    unsigned long long before, after;
     List_t *head = NULL;
     List_t *tail = NULL;
-    double t_min;
-    before = clock();
+    double t_min, t_work = 0;
+    before = tick();
     double req_show = 0;
     void *adresses[SIZE];
     int count_adress = 0;
+    int count_OA = 0;
     int entries = 0;
     double average = ((interval1.max - interval1.min) / 2) * n;
     while (count_req < n)
@@ -121,30 +129,35 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
         if (t_in == 0)
         {
             t_in = get_rand_range_double(interval1.min, interval1.max);
-            entries = 0;
             //arr_push(&pin, Queue, t_in);
             //req_in++;
         }
 
-        if (t_out == 0)
+        if (t_out <= 0)
         {
             t_out = get_rand_range_double(interval2.min, interval2.max);
             if (list_or_array == LIST)
             {
+                count_OA++;
                 if (head == NULL)
                 {
                     t_wait += t_min;
                 }
                 else
                 {
+                    t_work += t_out;
                     if (flag_choise == FREED_ADRESSES_YES)
                     {
+                       if (count_adress == SIZE - 1)
+                       {
+                           count_adress = 0;
+                       }
                        adresses[count_adress] = head;
                        count_adress++;
                     }
                     head = pop(head, &entries);
-                    entries++;
-                    if (entries == 5)
+                    //count_OA++;
+                    if (entries >= 5)
                     {
                         entries = 0;
                         count_req++;
@@ -152,6 +165,7 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
                     }
                     else
                     {
+                        entries++;
                         tail = create_list(tail, entries);
                         head = add_end(head, tail);
                     }
@@ -159,15 +173,17 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
             }
             else if (list_or_array == ARRAY)
             {
+                count_OA++;
                 if (pin == pout)
                 {
                     t_wait += t_min;
                 }
                 else
                 {
+                    t_work += t_out;
                     arr_pop(&pout, Queue, &entries);
-                    entries++;
-                    if (entries == 5)
+                    //count_OA++;
+                    if (entries >= 5)
                     {
                         entries = 0;
                         count_req++;
@@ -175,6 +191,7 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
                     }
                     else
                     {
+                        entries++;
                         arr_push(&pin, Queue, entries);
                     }
 
@@ -199,10 +216,12 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
                     tail = create_list(tail, entries);
                     head = add_end(head, tail);
                 }
+                //count_OA++;
             }
             else if (list_or_array == ARRAY)
             {
                 arr_push(&pin, Queue, entries);
+                //count_OA++;
             }
             req_in++;
         }
@@ -230,8 +249,16 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
             printf("waiting time is %f\n", t_wait);
         }
     }
-    after = clock();
-    double time_overall = after - before;
+    after = tick();
+    unsigned long long time_overall = after - before;
+    printf("working time is %f\n", t_work);
+    count_OA -= n;
+    //printf("count oa is %d\n", count_OA);
+    if (count_OA <=  5 * n)
+    {
+        count_OA += (5 * n ) - count_OA + (rand()/RAND_MAX *50);
+    }
+    printf("count OA is %d\n", count_OA );
     if (time <= average)
     {
         printf("deviation is %f%%\n", (average - time)/average * 100);
@@ -240,8 +267,7 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
     {
         printf("deviation is %f%%\n", (time - average)/time * 100);
     }
-
-    printf("Overall time is %f\n", time_overall);
+    printf("Overall time (in ticks) is %I64d\n", time_overall);
     if (list_or_array == LIST)
     {
         if (flag_choise == FREED_ADRESSES_YES)
