@@ -7,7 +7,7 @@ OBJS := io.o list.o arr.o
 app.exe : $(OBJS) main.o
 	$(CC) $(CFLAGS) $^ -o main.exe
 	
-%.o : %.c %.h
+%.o : %.c *.h
 	$(CC) $(CFLAGS) -c $<
 	
 clean :

@@ -234,8 +234,10 @@ int main(void)
             s2_time = t2 - t1;
             printf("tmp is %d\n", tmp);
             printf("result is %d\n", result);
-            printf(" Размер элемента списка is %d\n", sizeof(Stack));
-            printf(" Размер элемента массива is %d\n", sizeof(base));
+            printf(" Размер элемента списка is %I64d\n", sizeof(Stack));
+            printf(" Размер элемента массива is %I64d\n", sizeof(base));
+            printf("s1_time is %ld\n", s1_time);
+            printf("s2_time is %ld\n", s2_time);
             if (s1_time <= s2_time)
             {
                 result_time = ((double)(s2_time - s1_time)/s2_time) * 100;
