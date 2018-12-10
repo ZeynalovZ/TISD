@@ -102,6 +102,8 @@ void print_adresses(void **adresses, int count)
 }
 void work_space(int n, interval interval1, interval interval2, int list_or_array, int flag_choise)
 {
+    double eps = 0.00001;
+    int code_error = OK;
     // Кол - во вхождений элемент в ОА
     int count_req = 0;
     // Кол - во запросов к очередям
@@ -109,9 +111,9 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
     //
     double t_in = 0, t_out = 0, t_wait = 0, time = 0;
     // Массив - очередь
-    double Queue[SIZE];
-    double *pin = &Queue[0];
-    double *pout = &Queue[0];
+    QUEUE Queue[SIZE];
+    QUEUE *pin = &Queue[0];
+    QUEUE *pout = &Queue[0];
     // Время выполнения 1000 операций
     unsigned long long before, after;
     List_t *head = NULL;
@@ -123,14 +125,15 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
     int count_adress = 0;
     int count_OA = 0;
     int entries = 0;
-    double average = ((interval1.max - interval1.min) / 2) * n;
+    double average = ((interval1.max - interval1.min) / 2.0) * n;
+    printf("average is %f\n", average);
+    printf("int2 is %d\n", interval2.max);
+    printf("int1 is %d\n", interval2.min);
     while (count_req < n)
     {
         if (t_in == 0)
         {
             t_in = get_rand_range_double(interval1.min, interval1.max);
-            //arr_push(&pin, Queue, t_in);
-            //req_in++;
         }
 
         if (t_out <= 0)
@@ -138,7 +141,7 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
             t_out = get_rand_range_double(interval2.min, interval2.max);
             if (list_or_array == LIST)
             {
-                count_OA++;
+                //count_OA++;
                 if (head == NULL)
                 {
                     t_wait += t_min;
@@ -157,7 +160,7 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
                     }
                     head = pop(head, &entries);
                     //count_OA++;
-                    if (entries >= 5)
+                    if (entries == 4)
                     {
                         entries = 0;
                         count_req++;
@@ -169,11 +172,12 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
                         tail = create_list(tail, entries);
                         head = add_end(head, tail);
                     }
+                    count_OA++;
                 }
             }
             else if (list_or_array == ARRAY)
             {
-                count_OA++;
+
                 if (pin == pout)
                 {
                     t_wait += t_min;
@@ -182,8 +186,7 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
                 {
                     t_work += t_out;
                     arr_pop(&pout, Queue, &entries);
-                    //count_OA++;
-                    if (entries >= 5)
+                    if (entries == 4)
                     {
                         entries = 0;
                         count_req++;
@@ -192,19 +195,29 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
                     else
                     {
                         entries++;
-                        arr_push(&pin, Queue, entries);
-                    }
+                        code_error = arr_push(&pin, pout, Queue, entries);
+                        if (code_error == ERR_FULL)
+                        {
+                            printf("QUEUE is FULL\n");
+                            break;
+                        }
 
+
+                    }
+                    count_OA++;
                 }
             }
         }
+        if (t_out > eps)
+        {
+            t_min = min(t_in, t_out);
+        }
 
-        t_min = min(t_in, t_out);
         if (t_min == t_in)
         {
             if (list_or_array == LIST)
             {
-                //printf("111\n");
+                entries = 0;
                 if (head == NULL)
                 {
 
@@ -220,14 +233,23 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
             }
             else if (list_or_array == ARRAY)
             {
-                arr_push(&pin, Queue, entries);
-                //count_OA++;
+                entries = 0;
+                pin->time = t_in;
+                code_error = arr_push(&pin, pout, Queue, entries);
+                if (code_error == ERR_FULL)
+                {
+                    printf("QUEUE is FULL\n");
+                    break;
+                }
+
             }
             req_in++;
         }
+
         t_in -= t_min;
         t_out -= t_min;
         time += t_min;
+
 
         if (count_req % 100 == 0 && req_show != count_req)
         {
@@ -252,6 +274,8 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
     after = tick();
     unsigned long long time_overall = after - before;
     printf("working time is %f\n", t_work);
+    printf("count OA is %d\n", count_OA );
+    /*
     count_OA -= n;
     //printf("count oa is %d\n", count_OA);
     if (count_OA <=  5 * n)
@@ -259,6 +283,7 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
         count_OA += (5 * n ) - count_OA + (rand()/RAND_MAX *50);
     }
     printf("count OA is %d\n", count_OA );
+    */
     if (time <= average)
     {
         printf("deviation is %f%%\n", (average - time)/average * 100);
