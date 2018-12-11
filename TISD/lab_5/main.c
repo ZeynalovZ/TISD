@@ -125,6 +125,7 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
     int count_adress = 0;
     int count_OA = 0;
     int entries = 0;
+    int list_t = 0;
     double average = ((interval1.max - interval1.min) / 2.0) * n;
     printf("average is %f\n", average);
     printf("int2 is %d\n", interval2.max);
@@ -260,10 +261,12 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
             if (list_or_array == ARRAY)
             {
                 printf("size of queue is %d\n", abs(pin - pout));
+
             }
             else
             {
                 len = list_size(head);
+                list_t += len;
                 printf("size of queue is %d\n",len);
             }
             printf("count req in is %d\n", req_in);
@@ -304,8 +307,12 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
         printf("deviation is %f%%\n", deviation);
     }
     printf("Overall time (in ticks) is %I64d\n", time_overall);
+    printf("size used for array is %d\n", sizeof(Queue));
+
+
     if (list_or_array == LIST)
     {
+        printf("size used for list is %d\n", list_t * sizeof(List_t));
         if (flag_choise == FREED_ADRESSES_YES)
         {
            print_adresses(adresses, count_adress);
