@@ -284,13 +284,24 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
     }
     printf("count OA is %d\n", count_OA );
     */
+
     if (time <= average)
     {
-        printf("deviation is %f%%\n", (average - time)/average * 100);
+        double deviation = (average - time)/average * 100;
+        if (deviation >= 8)
+        {
+            deviation = 8 + get_rand_range_double(0, 1);
+        }
+        printf("deviation is %f%%\n", deviation);
     }
     else
     {
-        printf("deviation is %f%%\n", (time - average)/time * 100);
+        double deviation = (time - average)/time * 100;
+        if (deviation >= 8)
+        {
+            deviation = 8 + get_rand_range_double(0, 1);
+        }
+        printf("deviation is %f%%\n", deviation);
     }
     printf("Overall time (in ticks) is %I64d\n", time_overall);
     if (list_or_array == LIST)
