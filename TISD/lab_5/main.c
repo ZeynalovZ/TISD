@@ -278,15 +278,6 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
     unsigned long long time_overall = after - before;
     printf("working time is %f\n", t_work);
     printf("count OA is %d\n", count_OA );
-    /*
-    count_OA -= n;
-    //printf("count oa is %d\n", count_OA);
-    if (count_OA <=  5 * n)
-    {
-        count_OA += (5 * n ) - count_OA + (rand()/RAND_MAX *50);
-    }
-    printf("count OA is %d\n", count_OA );
-    */
 
     if (time <= average)
     {
@@ -307,12 +298,12 @@ void work_space(int n, interval interval1, interval interval2, int list_or_array
         printf("deviation is %f%%\n", deviation);
     }
     printf("Overall time (in ticks) is %I64d\n", time_overall);
-    printf("size used for array is %d\n", sizeof(Queue));
+    printf("size used for array is %I64d\n", sizeof(Queue));
 
 
     if (list_or_array == LIST)
     {
-        printf("size used for list is %d\n", list_t * sizeof(List_t));
+        printf("size used for list is %I64d\n", list_t * sizeof(List_t));
         if (flag_choise == FREED_ADRESSES_YES)
         {
            print_adresses(adresses, count_adress);
