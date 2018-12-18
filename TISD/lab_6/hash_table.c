@@ -59,7 +59,7 @@ int create_table(table_t **table, char *filename, int *len)
         //printf("sizeof is %I64d", sizeof(tmp_table));
         if (tmp_table != NULL)
         {
-            for (int i = 0; i < max; i++)
+            for (int i = 0; i < count_nums_in_file; i++)
             {
                 tmp_table[i].sign = 0;
             }
@@ -155,22 +155,28 @@ int restruct(table_t *table, int n, int search, table_t **new_table, int *new_si
     do
     {
         *new_size += SHIFT;
-        printf("new size is %d\n", *new_size);
-        new_tmp = malloc(*new_size * sizeof(table_t));
+       // printf("new size is %d\n", *new_size);
+        //printf("23\n");
+        new_tmp = calloc(*new_size, sizeof(table_t));
+        //printf("24\n");
         if (new_tmp)
         {
+
             for (int i = 0; i < *new_size; i++)
             {
+                //printf("1\n");
                 new_tmp[i].sign = 0;
             }
+
+            //printf("1\n");
             prime = select_prime(*new_size);
-            printf("prime is %d\n", prime);
+            //printf("prime is %d\n", prime);
             for (int i = 0; i < n; ++i)
             {
                 if (table[i].sign != 0)
                 {
                     index = hash_func(table[i].n, prime);
-                    printf("index is %d\n", index);
+                    //printf("index is %d\n", index);
                     if (new_tmp[index].sign != 0)
                     {
                         while ((new_tmp[index].sign) != 0)
@@ -203,6 +209,30 @@ int restruct(table_t *table, int n, int search, table_t **new_table, int *new_si
     return cmp;
 }
 
+void delete_from_table(table_t *table, int search, int n)
+{
+    int prime = select_prime(n);
+    int index = hash_func(search, prime);
+    if (table[index].sign != 0)
+    {
+        if (table[index].n == search)
+        {
+            table[index].sign = 0;
+        }
+        else
+        {
+            while (table[index].n != search)
+            {
+                index++;
+                if (index == n)
+                {
+                    index = 0;
+                }
+            }
+            table[index].sign = 0;
+        }
+    }
+}
 /*
 int restruct(hashlist **table, int n, int search,  int max, int (*func)(int, int), hashlist ***new_table, int *new_size)
 {

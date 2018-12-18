@@ -8,10 +8,10 @@
 #include "search.h"
 #include "err.h"
 #define IMG_VIEWER "mspaint.exe"
-#define DOT "C:\\Graphviz2.38\\bin\\dot.exe" //Path to dot.exe
+#define DOT "C:\\release\\bin\\dot.exe" //Path to dot.exe
 #define BSTDOTNAME "BST.gv"
 #define BSTIMGNAME "BST.png"
-#define APPFOLDER "D:\\Trash"  //Path to trash folder C:\Graphviz2.38\bin C:\Users\зейнал\AppData\Local\Temp
+#define APPFOLDER "C:\\Trash"  //Path to trash folder C:\Graphviz2.38\bin C:\Users\зейнал\AppData\Local\Temp
 #define AVLDOTNAME "AVL.gv"
 #define AVLIMGNAME "AVL.png"
 #define TMPFILE "tmp"
@@ -81,7 +81,7 @@ int main()
         if (rc == OK)
         {
             int search, maxcmp;
-            printf("Enter a number to search:\n");
+            printf("Enter a number to delete:\n");
             scanf("%d", &search);
             printf("Enter max comparisons number:\n");
             scanf("%d", &maxcmp);
@@ -129,12 +129,12 @@ int main()
                     table_t *res = NULL;
                     int new_size = 0;
                     cmp_table = restruct(table, table_size, search, &res, &new_size, maxcmp);
-
                     if (res)
                     {
                         free(table);
                         table = res;
                         table_size = new_size;
+                        delete_from_table(table, search, table_size);
                         print_hash_table(table, table_size);
                         printf("Table size:% 15d\n", table_size *(int)(sizeof(table_t))
                                + elements_count * (int)(sizeof(table)));

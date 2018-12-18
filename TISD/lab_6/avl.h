@@ -12,4 +12,5 @@ struct AVL
 AVL *balance(AVL *p);
 AVL *avl_add(AVL *root, int num);
 void avl_free(AVL *root);
+AVL* del(AVL* p, int k);
 #endif
