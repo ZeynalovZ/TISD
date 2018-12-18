@@ -16,7 +16,7 @@ int select_prime(int max)
     int prime_nums[20] = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71 };
     for (int i = 19; i >= 0; i--)
     {
-        if (prime_nums[i] <= max)
+        if (prime_nums[i] < max)
         {
             //printf("prime is %d", prime_nums[i]);
             return prime_nums[i];
@@ -53,10 +53,9 @@ int create_table(table_t **table, char *filename, int *len)
     {
         rewind(f);
         int index = 0;
-        int prime = select_prime(max);
+        int prime = select_prime(count_nums_in_file);
         //printf("max is %d\n", max);
-        //printf("prime is %d\n", prime);
-        table_t *tmp_table = malloc(max * sizeof(table_t));
+        table_t *tmp_table = malloc(count_nums_in_file * sizeof(table_t));
         //printf("sizeof is %I64d", sizeof(tmp_table));
         if (tmp_table != NULL)
         {
@@ -64,7 +63,7 @@ int create_table(table_t **table, char *filename, int *len)
             {
                 tmp_table[i].sign = 0;
             }
-            while (fscanf(f, "%d", &n) == 1)
+            while (fscanf(f, "%d", &n) == 1 || !feof(f))
             {
                 index = hash_func(n, prime);
                 // Распишем закрытое хеширование
@@ -95,14 +94,15 @@ int create_table(table_t **table, char *filename, int *len)
             return ERR_MEM;
         }
     }
-    *len = max;
+    *len = count_nums_in_file;
+    fclose(f);
     //printf("1\n");
     return OK;
 }
 int search_table(table_t *table, int size, int search)
 {
     int cmp = 1;
-    int prime = select_prime(search);
+    int prime = select_prime(size);
     int index = hash_func(search, prime);
     if (table[index].sign != 0 && table[index].n == search)
     {
@@ -113,6 +113,11 @@ int search_table(table_t *table, int size, int search)
         while (table[index].sign != 0 && table[index].n != search)
         {
             cmp++;
+            index++;
+            if (index == size)
+            {
+                index = 0;
+            }
         }
     }
     return cmp;
@@ -122,7 +127,7 @@ void print_hash_table(table_t *table, int max)
     printf("hash_table is:\n");
     for (int i = 0; i < max; i++)
     {
-        printf("%4d ", i + 1);
+        printf("%4d ", i);
     }
     printf("\n");
     for (int i = 0; i < max; i++)
@@ -138,31 +143,67 @@ void print_hash_table(table_t *table, int max)
     }
     printf("\n");
 }
-/*
-int restruct(table_t *table, int n, int search, table_t **new_table, int *new_size)
+
+int restruct(table_t *table, int n, int search, table_t **new_table, int *new_size, int max)
 {
     *new_table = NULL;
     int cmp;
+    int prime;
+    int index;
     *new_size = n;
+    table_t *new_tmp = NULL;
     do
     {
         *new_size += SHIFT;
-        *new_table = calloc(*new_size, sizeof(hashlist*));
-        if (*new_table)
+        printf("new size is %d\n", *new_size);
+        new_tmp = malloc(*new_size * sizeof(table_t));
+        if (new_tmp)
         {
+            for (int i = 0; i < *new_size; i++)
+            {
+                new_tmp[i].sign = 0;
+            }
+            prime = select_prime(*new_size);
+            printf("prime is %d\n", prime);
             for (int i = 0; i < n; ++i)
             {
+                if (table[i].sign != 0)
+                {
+                    index = hash_func(table[i].n, prime);
+                    printf("index is %d\n", index);
+                    if (new_tmp[index].sign != 0)
+                    {
+                        while ((new_tmp[index].sign) != 0)
+                        {
+                            if (index == *new_size)
+                            {
+                                index = 0;
+                                continue;
+                            }
+                            index++;
+                        }
+                        new_tmp[index].n = table[i].n;
+                        new_tmp[index].sign = 1;
+                    }
+                    else
+                    {
+                        new_tmp[index].n = table[i].n;
+                        new_tmp[index].sign = 1;
+                    }
+
+                }
 
             }
+            *new_table = new_tmp;
         }
         else
             return -1;
-        cmp = search_table(*new_table, *new_size, search, func);
+        cmp = search_table(*new_table, *new_size, search);
     } while (cmp > max);
     return cmp;
 }
 
-
+/*
 int restruct(hashlist **table, int n, int search,  int max, int (*func)(int, int), hashlist ***new_table, int *new_size)
 {
     *new_table = NULL;

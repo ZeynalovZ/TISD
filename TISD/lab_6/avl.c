@@ -88,3 +88,37 @@ void avl_free(AVL *root)
         free(root);
     }
 }
+
+AVL* findmin(AVL* p) // поиск узла с минимальным ключом в дереве p
+{
+    return p->left?findmin(p->left):p;
+}
+
+AVL* removemin(AVL* p) // удаление узла с минимальным ключом из дерева p
+{
+    if( p->left==0 )
+        return p->right;
+    p->left = removemin(p->left);
+    return balance(p);
+}
+
+AVL* del(AVL* p, int k) // удаление ключа k из дерева p
+{
+    if( !p ) return 0;
+    if( k < p->value )
+        p->left = del(p->left, k);
+    else if (k > p->value)
+        p->right = del(p->right,k);
+    else //  k == p->key
+    {
+        AVL* q = p->left;
+        AVL* r = p->right;
+        free(p);
+        if( !r ) return q;
+        AVL* min = findmin(r);
+        min->right = removemin(r);
+        min->left = q;
+        return balance(min);
+    }
+    return balance(p);
+}

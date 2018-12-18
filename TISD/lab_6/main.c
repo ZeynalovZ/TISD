@@ -128,7 +128,8 @@ int main()
                     printf("\nAfter restructing hash table:\n");
                     table_t *res = NULL;
                     int new_size = 0;
-                    //cmp_table = restruct(table, table_size, search, maxcmp, &res, &new_size);
+                    cmp_table = restruct(table, table_size, search, &res, &new_size, maxcmp);
+
                     if (res)
                     {
                         free(table);
@@ -168,9 +169,11 @@ int main()
             {
                 bst_to_avl(bstroot, &avlroot);
                 rc = create_table(&table, finname, &table_size);
+
             }
             if (rc == OK)
             {
+
                 fwrite_array(TMPFILE "1", N, arr);
                 FILE *fin = fopen(TMPFILE "1", "r");
                 FILE *fsearch = fopen(TMPFILE, "r");
@@ -178,18 +181,21 @@ int main()
                 {
                     unsigned long long tb = 0, te = 0;
                     unsigned long long tacts_bst = 0, tacts_avl = 0, tacts_table = 0, tacts_file = 0;
-                    int cmp_bst = 0, cmp_avl = 0, cmp_table = 0, cmp_file = 0;
+                    int cmp_bst = 0, cmp_avl = 0, /*cmp_table = 0,*/ cmp_file = 0;
 
                     int num;
                     char dummy;
                     int got;
                     do
                     {
+
                         got = fscanf(fin, "%d%c", &num, &dummy);
                         if (got)
                         {
                             tb = tick();
+
                             cmp_bst += search_bst(bstroot, num);
+
                             te = tick();
                             tacts_bst += te - tb;
                             tb = tick();
@@ -197,7 +203,9 @@ int main()
                             te = tick();
                             tacts_avl += te - tb;
                             tb = tick();
-                            cmp_table = search_table(table, table_size, 13);
+
+                            //cmp_table = search_table(table, table_size, num);
+
                             te = tick();
                             tacts_table += te - tb;
                             tb = tick();
@@ -210,7 +218,7 @@ int main()
                     printf("Structure\tTackts\tComparisons\n");
                     printf("BST:% 15g% 10g\n", tacts_bst / (double)(N), cmp_bst / (double)(N));
                     printf("AVL:% 15g% 10g\n", (int)(tacts_avl) / (double)(N), cmp_avl / (double)(N));
-                    printf("Table:% 13g% 10g\n", (int)(tacts_table) / (double)(N), cmp_table / (double)(N));
+                    //printf("Table:% 13g% 10g\n", (int)(tacts_table) / (double)(N), cmp_table / (double)(N));
                     printf("File:% 14g% 10g\n", (int)(tacts_file) / (double)(N), cmp_file / (double)(N));
                     fclose(fin);
                     fclose(fsearch);
