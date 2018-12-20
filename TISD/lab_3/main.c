@@ -427,8 +427,8 @@ int main(void)
                                     }
 
                                     printf("Занимаемая память:\n");
-                                    printf("Обычная: %d\n", sizeof(matrix));
-                                    printf("В разреженном формате: %d\n", memory);
+                                    printf("Обычная: %I64d\n", sizeof(matrix));
+                                    printf("В разреженном формате: %I64d\n", memory);
                                     printf("Время умножения обычным умножением матриц: %ld\n", (long int)(s2_time/50));
                                     printf("Время умножения данным методом: %ld\n", (long int)(s1_time/50));
                                     if (s1_time <= s2_time)
