@@ -45,10 +45,10 @@ int main(int argc, char **argv)
                 printf("Введите вершину из которой ищем, введите вершины в которую ищем\n");
                 if (scanf("%d %d", &start, &end) == 2)
                 {
-                    if (start >= 1 && end > start)
+                    if (start >= 1 && end >= 1)
                     {
                         overal_matrix_creation(matrix1, matrix2, n, crossroad);
-                        search_Dijkstra(matrix1, n, start, end);
+                        search_Dijkstra(matrix1, n, start, end, matrix2);
                     }
                     else
                     {

@@ -5,4 +5,6 @@
 #define ERR_MEM -2
 #define ERR_CMD -3
 #define BUFSIZE 50
+#define TRUE 1
+#define FALSE 2
 #endif
