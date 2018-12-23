@@ -47,6 +47,10 @@ int main(int argc, char **argv)
                 {
                     if (start >= 1 && end >= 1)
                     {
+                        if (end > n)
+                        {
+                            printf("Не сущетсвует такого пути\n");
+                        }
                         overal_matrix_creation(matrix1, matrix2, n, crossroad);
                         search_Dijkstra(matrix1, n, start, end, matrix2);
                     }
@@ -64,6 +68,8 @@ int main(int argc, char **argv)
                 }
             }
             fclose(f);
+            free_matrix(matrix1, n);
+            free_matrix(matrix2, n);
         }
     }
 

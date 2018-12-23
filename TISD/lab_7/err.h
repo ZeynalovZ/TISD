@@ -6,5 +6,5 @@
 #define ERR_CMD -3
 #define BUFSIZE 50
 #define TRUE 1
-#define FALSE 2
+#define FALSE 0
 #endif

@@ -137,7 +137,7 @@ void search_Dijkstra(int **VES, int n, int start, int end, int **matrix2)
                         u = PredVertex[u];
                     }
                     printf("Длина пути - %d\n\n", DlinaPuti[end]);
-                    print_graph(VES, n, n);
+
                     break;
                 }
                 x[v] = 1;

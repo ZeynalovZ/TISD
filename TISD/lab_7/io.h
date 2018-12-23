@@ -8,4 +8,5 @@ struct GRAPH
 };
 int read_graph_from_file(FILE *f, int ***matrix1, int ***matrix2, int *n, int *m);
 void print_graph(int **matrix, int n, int m);
+void free_matrix(int **matrix, int n);
 #endif
