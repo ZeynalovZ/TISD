@@ -181,7 +181,7 @@ int main()
                 {
                     unsigned long long tb = 0, te = 0;
                     unsigned long long tacts_bst = 0, tacts_avl = 0, tacts_table = 0, tacts_file = 0;
-                    int cmp_bst = 0, cmp_avl = 0, /*cmp_table = 0,*/ cmp_file = 0;
+                    int cmp_bst = 0, cmp_avl = 0, cmp_file = 0;
 
                     int num;
                     char dummy;
